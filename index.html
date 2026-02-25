@@ -3,59 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dijital Analiz Aracı</title>
+    <title>Koordine Dijital | Profesyonel Analiz Paneli</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans">
+<body class="bg-gray-50 text-gray-900">
 
-    <nav class="bg-white border-b border-slate-200 py-4 shadow-sm">
+    <nav class="bg-white border-b sticky top-0 z-50 py-4 shadow-sm">
         <div class="container mx-auto px-6 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-blue-600 tracking-tight">
-                <i class="fa-solid fa-chart-line mr-2"></i>AnalizApp
-            </h1>
-            <div class="space-x-4 text-sm font-medium text-slate-600">
-                <a href="#" class="hover:text-blue-600">Anasayfa</a>
-                <a href="#" class="hover:text-blue-600">Raporlar</a>
-                <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Giriş Yap</a>
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-600 p-2 rounded-lg text-white">
+                    <i class="fa-solid fa-layer-group text-xl"></i>
+                </div>
+                <span class="text-2xl font-black tracking-tighter text-blue-900">KOORDİNE <span class="font-light text-blue-600">DİJİTAL</span></span>
+            </div>
+            <div class="hidden md:flex gap-6 font-medium text-gray-600">
+                <a href="#" class="hover:text-blue-600">Analiz</a>
+                <a href="#" class="hover:text-blue-600">Hizmetler</a>
+                <a href="#" class="hover:text-blue-600">İletişim</a>
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto px-6 mt-16">
-        <div class="text-center max-w-2xl mx-auto">
-            <h2 class="text-4xl font-extrabold text-slate-900 mb-4">Şirketinizin Dijital Gücünü Analiz Edin</h2>
-            <p class="text-lg text-slate-600 mb-8">Web sitenizi ve sosyal medya varlığınızı saniyeler içinde tarayın, geliştirme önerileri alın.</p>
+    <header class="bg-white pt-16 pb-32 border-b">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-5xl font-extrabold text-slate-900 mb-6 leading-tight">Dijital Varlığınızı <span class="text-blue-600">Koordine Edin.</span></h1>
+            <p class="text-xl text-gray-500 max-w-2xl mx-auto mb-10">Web sitenizi, hızınızı ve sosyal medya etkileşimlerinizi tek bir raporla profesyonelce analiz ediyoruz.</p>
             
-            <div class="flex p-1 bg-white border border-slate-300 rounded-2xl shadow-xl focus-within:ring-2 focus-within:ring-blue-500 transition-all">
-                <input type="text" placeholder="https://firmaadresi.com" class="w-full px-6 py-4 rounded-xl outline-none text-lg">
-                <button class="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition active:scale-95">
-                    Analiz Et
+            <div class="max-w-3xl mx-auto bg-white p-2 rounded-2xl shadow-2xl border flex flex-col md:flex-row gap-2">
+                <input id="siteUrl" type="text" placeholder="https://firmaadresi.com" class="flex-1 px-6 py-4 outline-none text-lg rounded-xl">
+                <button onclick="analiziBaslat()" class="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+                    Ücretsiz Analiz Et
                 </button>
             </div>
         </div>
+    </header>
 
-        <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-center">
-                <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fa-solid fa-search text-2xl"></i>
-                </div>
-                <h3 class="font-bold text-xl mb-2">SEO Durumu</h3>
-                <p class="text-slate-500 text-sm">Arama motorlarında görünürlük puanınız.</p>
-                <div class="mt-4 text-3xl font-black text-green-600">%82</div>
+    <section id="resultPanel" class="container mx-auto px-6 -mt-20 hidden">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-white p-6 rounded-2xl shadow-xl border-b-4 border-green-500">
+                <p class="text-sm font-bold text-gray-400 uppercase">SEO Skoru</p>
+                <h2 class="text-4xl font-black text-gray-800">88<span class="text-lg text-gray-400">/100</span></h2>
             </div>
-
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-center">
-                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fa-solid fa-bolt text-2xl"></i>
-                </div>
-                <h3 class="font-bold text-xl mb-2">Sayfa Hızı</h3>
-                <p class="text-slate-500 text-sm">Sitenizin açılış hızı performansı.</p>
-                <div class="mt-4 text-3xl font-black text-blue-600">1.2s</div>
+            <div class="bg-white p-6 rounded-2xl shadow-xl border-b-4 border-blue-500">
+                <p class="text-sm font-bold text-gray-400 uppercase">Mobil Hız</p>
+                <h2 class="text-4xl font-black text-gray-800">1.4s</h2>
             </div>
+            <div class="bg-white p-6 rounded-2xl shadow-xl border-b-4 border-purple-500">
+                <p class="text-sm font-bold text-gray-400 uppercase">Sosyal Medya</p>
+                <h2 class="text-4xl font-black text-gray-800">Orta</h2>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-xl border-b-4 border-yellow-500">
+                <p class="text-sm font-bold text-gray-400 uppercase">Güvenlik</p>
+                <h2 class="text-4xl font-black text-gray-800 text-green-500">SSL Aktif</h2>
+            </div>
+        </div>
 
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-center">
-                <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fa-solid fa-share-nodes text-2xl"></i>
+        <div class="mt-12 bg-white rounded-3xl shadow-xl overflow-hidden border">
+            <div class="p-8 border-b bg-gray-50 flex justify-between items-center">
+                <h3 class="text-2xl font-bold italic">Kritik Öneriler</h3>
+                <span class="bg-red-100 text-red-600 px-4 py-1 rounded-full text-sm font-bold">3 Hata Bulundu</span>
+            </div>
+            <div class="p-8 space-y-6">
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-red-50 border-l-4 border-red-500">
+                    <i class="fa-solid fa-circle-exclamation text-red-500 mt-1 text-xl"></i>
+                    <div>
+                        <h4 class="font-bold text-red-800 text-lg">Eksik Meta Açıklaması</h4>
+                        <p class="text-red-700">Web sitenizin Google'da ne hakkında olduğu belirtilmemiş. Bu, tıklanma oranınızı %40 düşürür.</p>
+                    </div>
                 </div>
-                <h3
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-orange-50 border-l-4 border-orange-500">
+                    <i class="fa-solid fa-share-nodes text-orange-500 mt-1 text-xl"></i>
+                    <div>
+                        <h4 class="font-bold text-orange-800 text-lg">Instagram Linki Kırık</h4>
+                        <p class="text-orange-700">Footer kısmındaki Instagram ikonu yanlış sayfaya yönlendiriyor. Takipçi kaybediyorsunuz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function analiziBaslat() {
+            const url = document.getElementById('siteUrl').value;
+            if(!url) { alert("Lütfen URL girin!"); return; }
+            
+            // Simülasyon Efekti
+            document.querySelector('button').innerText = "Veriler Toplanıyor...";
+            setTimeout(() => {
+                document.getElementById('resultPanel').classList.remove('hidden');
+                document.querySelector('button').innerText = "Analiz Tamamlandı";
+                window.scrollTo({ top: 600, behavior: 'smooth' });
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
