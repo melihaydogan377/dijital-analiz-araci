@@ -3,98 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Koordine Dijital | Profesyonel Analiz Paneli</title>
+    <title>Koordine Dijital | Gelişmiş Analiz ve Strateji Paneli</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body class="bg-slate-50 text-slate-800 font-sans selection:bg-blue-200">
 
     <nav class="bg-white border-b sticky top-0 z-50 py-4 shadow-sm">
         <div class="container mx-auto px-6 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="bg-blue-600 p-2 rounded-lg text-white">
-                    <i class="fa-solid fa-layer-group text-xl"></i>
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-2 rounded-xl text-white shadow-lg shadow-blue-200">
+                    <i class="fa-solid fa-chart-pie text-xl"></i>
                 </div>
-                <span class="text-2xl font-black tracking-tighter text-blue-900">KOORDİNE <span class="font-light text-blue-600">DİJİTAL</span></span>
-            </div>
-            <div class="hidden md:flex gap-6 font-medium text-gray-600">
-                <a href="#" class="hover:text-blue-600">Analiz</a>
-                <a href="#" class="hover:text-blue-600">Hizmetler</a>
-                <a href="#" class="hover:text-blue-600">İletişim</a>
+                <span class="text-2xl font-black tracking-tight text-slate-900">KOORDİNE <span class="text-blue-600">DİJİTAL</span></span>
             </div>
         </div>
     </nav>
 
-    <header class="bg-white pt-16 pb-32 border-b">
-        <div class="container mx-auto px-6 text-center">
-            <h1 class="text-5xl font-extrabold text-slate-900 mb-6 leading-tight">Dijital Varlığınızı <span class="text-blue-600">Koordine Edin.</span></h1>
-            <p class="text-xl text-gray-500 max-w-2xl mx-auto mb-10">Web sitenizi, hızınızı ve sosyal medya etkileşimlerinizi tek bir raporla profesyonelce analiz ediyoruz.</p>
+    <header class="bg-white pt-12 pb-24 border-b relative overflow-hidden">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Dijital Varlığınızı Görselleştirin</h1>
+            <p class="text-lg text-slate-500 max-w-2xl mx-auto mb-8">Web sitesi performansı, SEO ve sosyal medya gücünüzü analiz edip size özel bir büyüme yol haritası çıkarıyoruz.</p>
             
-            <div class="max-w-3xl mx-auto bg-white p-2 rounded-2xl shadow-2xl border flex flex-col md:flex-row gap-2">
-                <input id="siteUrl" type="text" placeholder="https://firmaadresi.com" class="flex-1 px-6 py-4 outline-none text-lg rounded-xl">
-                <button onclick="analiziBaslat()" class="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg shadow-blue-200">
-                    Ücretsiz Analiz Et
+            <div class="max-w-3xl mx-auto bg-white p-2 rounded-2xl shadow-xl border flex flex-col md:flex-row gap-2 transition-all focus-within:ring-4 focus-within:ring-blue-100">
+                <input id="siteUrl" type="text" placeholder="https://ornekfirma.com" class="flex-1 px-6 py-4 outline-none text-lg rounded-xl bg-transparent">
+                <button id="analizBtn" onclick="analiziBaslat()" class="bg-slate-900 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-blue-600 transition-all shadow-md">
+                    Rapor Oluştur
                 </button>
             </div>
         </div>
     </header>
 
-    <section id="resultPanel" class="container mx-auto px-6 -mt-20 hidden">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="bg-white p-6 rounded-2xl shadow-xl border-b-4 border-green-500">
-                <p class="text-sm font-bold text-gray-400 uppercase">SEO Skoru</p>
-                <h2 class="text-4xl font-black text-gray-800">88<span class="text-lg text-gray-400">/100</span></h2>
+    <div id="loading" class="hidden container mx-auto text-center mt-12">
+        <i class="fa-solid fa-circle-notch fa-spin text-4xl text-blue-600 mb-4"></i>
+        <h3 class="text-xl font-bold text-slate-700 animate-pulse">Veriler Çekiliyor ve Yapay Zeka Stratejisi Oluşturuluyor...</h3>
+    </div>
+
+    <main id="resultPanel" class="container mx-auto px-6 -mt-10 hidden pb-20">
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 relative z-20">
+            <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 flex flex-col items-center">
+                <i class="fa-solid fa-trophy text-yellow-500 text-3xl mb-2"></i>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Genel Skor</p>
+                <h2 class="text-3xl font-black text-slate-800">72<span class="text-sm text-slate-400">/100</span></h2>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-xl border-b-4 border-blue-500">
-                <p class="text-sm font-bold text-gray-400 uppercase">Mobil Hız</p>
-                <h2 class="text-4xl font-black text-gray-800">1.4s</h2>
+            <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 flex flex-col items-center">
+                <i class="fa-solid fa-bolt text-blue-500 text-3xl mb-2"></i>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Performans</p>
+                <h2 class="text-3xl font-black text-slate-800">Orta</h2>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-xl border-b-4 border-purple-500">
-                <p class="text-sm font-bold text-gray-400 uppercase">Sosyal Medya</p>
-                <h2 class="text-4xl font-black text-gray-800">Orta</h2>
+            <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 flex flex-col items-center">
+                <i class="fa-solid fa-magnifying-glass-chart text-green-500 text-3xl mb-2"></i>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">SEO Uyumu</p>
+                <h2 class="text-3xl font-black text-green-600">%65</h2>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-xl border-b-4 border-yellow-500">
-                <p class="text-sm font-bold text-gray-400 uppercase">Güvenlik</p>
-                <h2 class="text-4xl font-black text-gray-800 text-green-500">SSL Aktif</h2>
+            <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 flex flex-col items-center">
+                <i class="fa-brands fa-instagram text-purple-500 text-3xl mb-2"></i>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sosyal Etki</p>
+                <h2 class="text-3xl font-black text-red-500">Zayıf</h2>
             </div>
         </div>
 
-        <div class="mt-12 bg-white rounded-3xl shadow-xl overflow-hidden border">
-            <div class="p-8 border-b bg-gray-50 flex justify-between items-center">
-                <h3 class="text-2xl font-bold italic">Kritik Öneriler</h3>
-                <span class="bg-red-100 text-red-600 px-4 py-1 rounded-full text-sm font-bold">3 Hata Bulundu</span>
-            </div>
-            <div class="p-8 space-y-6">
-                <div class="flex items-start gap-4 p-4 rounded-xl bg-red-50 border-l-4 border-red-500">
-                    <i class="fa-solid fa-circle-exclamation text-red-500 mt-1 text-xl"></i>
-                    <div>
-                        <h4 class="font-bold text-red-800 text-lg">Eksik Meta Açıklaması</h4>
-                        <p class="text-red-700">Web sitenizin Google'da ne hakkında olduğu belirtilmemiş. Bu, tıklanma oranınızı %40 düşürür.</p>
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-white p-6 rounded-3xl shadow-md border border-slate-100">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Dijital Denge Analizi</h3>
+                <div class="w-full h-64 flex justify-center">
+                    <canvas id="radarChart"></canvas>
                 </div>
-                <div class="flex items-start gap-4 p-4 rounded-xl bg-orange-50 border-l-4 border-orange-500">
-                    <i class="fa-solid fa-share-nodes text-orange-500 mt-1 text-xl"></i>
-                    <div>
-                        <h4 class="font-bold text-orange-800 text-lg">Instagram Linki Kırık</h4>
-                        <p class="text-orange-700">Footer kısmındaki Instagram ikonu yanlış sayfaya yönlendiriyor. Takipçi kaybediyorsunuz.</p>
-                    </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-3xl shadow-md border border-slate-100">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Rakip Karşılaştırması (Tahmini)</h3>
+                <div class="w-full h-64">
+                    <canvas id="barChart"></canvas>
                 </div>
             </div>
         </div>
-    </section>
+
+        <div class="bg-white rounded-3xl shadow-md border border-slate-100 overflow-hidden">
+            <div class="bg-slate-900 p-6 text-white flex justify-between items-center">
+                <div>
+                    <h3 class="text-2xl font-bold"><i class="fa-solid fa-map-location-dot mr-2"></i>Önerilen Aksiyon Planı</h3>
+                    <p class="text-slate-400 text-sm mt-1">Firmanızı dijitalde büyütmek için profesyonel adımlar.</p>
+                </div>
+                <button class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-bold text-sm transition-colors">
+                    <i class="fa-solid fa-download mr-1"></i> PDF İndir
+                </button>
+            </div>
+            
+            <div class="p-8 relative">
+                <div class="absolute left-10 md:left-12 top-10 bottom-10 w-1 bg-blue-100 rounded-full"></div>
+
+                <div class="relative flex items-start mb-10 pl-10 md:pl-16">
+                    <div class="absolute left-0 md:left-2 w-8 h-8 bg-blue-600 rounded-full border-4 border-white shadow flex items-center justify-center text-white font-bold text-xs z-10">1</div>
+                    <div class="bg-blue-50 p-5 rounded-xl border border-blue-100 w-full">
+                        <h4 class="font-bold text-blue-900 text-lg">Temel Web Optimizasyonu</h4>
+                        <p class="text-slate-600 text-sm mt-1">Öncelikle web sitenizin açılış hızı iyileştirilmeli ve eksik meta etiketleri (açıklamalar) girilerek Google'da bulunabilirliği artırılmalıdır.</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-start mb-10 pl-10 md:pl-16">
+                    <div class="absolute left-0 md:left-2 w-8 h-8 bg-purple-600 rounded-full border-4 border-white shadow flex items-center justify-center text-white font-bold text-xs z-10">2</div>
+                    <div class="bg-purple-50 p-5 rounded-xl border border-purple-100 w-full">
+                        <h4 class="font-bold text-purple-900 text-lg">Kurumsal Sosyal Medya Entegrasyonu</h4>
+                        <p class="text-slate-600 text-sm mt-1">Web sitenizde aktif Instagram ve LinkedIn bağlantıları eksik. Bu bağlantılar kurulmalı ve içerik takvimi oluşturularak düzenli paylaşıma başlanmalıdır.</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-start pl-10 md:pl-16">
+                    <div class="absolute left-0 md:left-2 w-8 h-8 bg-green-600 rounded-full border-4 border-white shadow flex items-center justify-center text-white font-bold text-xs z-10">3</div>
+                    <div class="bg-green-50 p-5 rounded-xl border border-green-100 w-full">
+                        <h4 class="font-bold text-green-900 text-lg">Koordine Büyüme ve Reklam Yönetimi</h4>
+                        <p class="text-slate-600 text-sm mt-1">Altyapı düzeltildikten sonra dijital pazarlama kampanyaları (Google Ads & Meta Ads) başlatılarak marka bilinirliği ölçeklendirilmelidir. <strong>(Bu aşamada bizimle çalışabilirsiniz.)</strong></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
 
     <script>
         function analiziBaslat() {
             const url = document.getElementById('siteUrl').value;
-            if(!url) { alert("Lütfen URL girin!"); return; }
+            if(!url) { alert("Lütfen analiz edilecek URL'yi girin."); return; }
             
-            // Simülasyon Efekti
-            document.querySelector('button').innerText = "Veriler Toplanıyor...";
+            const btn = document.getElementById('analizBtn');
+            const loading = document.getElementById('loading');
+            const resultPanel = document.getElementById('resultPanel');
+
+            // Durumu güncelle
+            btn.innerText = "Analiz Ediliyor...";
+            btn.disabled = true;
+            resultPanel.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            // 2.5 saniyelik sahte analiz süresi
             setTimeout(() => {
-                document.getElementById('resultPanel').classList.remove('hidden');
-                document.querySelector('button').innerText = "Analiz Tamamlandı";
-                window.scrollTo({ top: 600, behavior: 'smooth' });
-            }, 2000);
+                loading.classList.add('hidden');
+                resultPanel.classList.remove('hidden');
+                btn.innerText = "Yeniden Analiz Et";
+                btn.disabled = false;
+                
+                grafikleriCiz();
+                
+                // Aşağı kaydır
+                resultPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 2500);
+        }
+
+        let radarGrafik, barGrafik;
+
+        function grafikleriCiz() {
+            // Eski grafikleri temizle (Yeniden analiz edilirse üst üste binmesin diye)
+            if(radarGrafik) radarGrafik.destroy();
+            if(barGrafik) barGrafik.destroy();
+
+            // Radar Grafiği (Dijital Denge)
+            const ctxRadar = document.getElementById('radarChart').getContext('2d');
+            radarGrafik = new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['SEO', 'Hız', 'Mobil Uyum', 'Sosyal Medya', 'Güvenlik', 'İçerik'],
+                    datasets: [{
+                        label: 'Sizin Firmanız',
+                        data: [65, 40, 90, 30, 100, 50],
+                        backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                        borderColor: 'rgba(37, 99, 235, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(37, 99, 235, 1)'
+                    }]
+                },
+                options: { scales: { r: { beginAtZero: true, max: 100 } }, maintainAspectRatio: false }
+            });
+
+            // Bar Grafiği (Rakip Karşılaştırma)
+            const ctxBar = document.getElementById('barChart').getContext('2d');
+            barGrafik = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['Sizin Firmanız', 'Rakip A', 'Rakip B'],
+                    datasets: [{
+                        label: 'Dijital Görünürlük Puanı',
+                        data: [72, 85, 60],
+                        backgroundColor: ['rgba(37, 99, 235, 0.8)', 'rgba(203, 213, 225, 0.8)', 'rgba(203, 213, 225, 0.8)'],
+                        borderRadius: 6
+                    }]
+                },
+                options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
+            });
         }
     </script>
 </body>
