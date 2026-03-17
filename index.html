@@ -3,76 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTÜ UTAT | Akıllı Yönetim Paneli</title>
+    <title>BTÜ UTAT | Drag & Drop Board</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; color: #1e293b; overflow-x: hidden; }
         .hidden { display: none; }
-        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.5); }
-        .kanban-column { background-color: #f1f5f9; min-height: 750px; border-radius: 24px; border: 2px dashed #cbd5e1; }
-        .task-card { background: white; cursor: grab; transition: all 0.2s ease; border: 1px solid #e2e8f0; border-radius: 24px; position: relative; }
-        .task-card:active { cursor: grabbing; transform: scale(0.98); }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+        
+        /* Kanban Sütunları */
+        .kanban-column { background-color: rgba(226, 232, 240, 0.5); min-height: 750px; border-radius: 30px; border: 2px dashed #cbd5e1; transition: all 0.3s ease; }
+        
+        /* Kart Tasarımı */
+        .task-card { 
+            background: white; 
+            cursor: grab; 
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            border: 1px solid #e2e8f0; 
+            border-radius: 22px; 
+            position: relative;
+        }
+        .task-card:active { cursor: grabbing; transform: scale(0.95) rotate(2deg); z-index: 50; }
+        
+        /* Sürükleme Efektleri */
+        .sortable-ghost { opacity: 0.2; transform: scale(0.8); background: #003057 !important; border: 2px solid #3b82f6 !important; }
+        .sortable-drag { opacity: 1; transform: rotate(4deg); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+
+        /* Tamamlanan Kart Efekti */
+        .done-card { opacity: 0.5; background: #1e293b; border-color: #0f172a; }
+        .done-card p, .done-card span { color: #94a3b8 !important; text-decoration: line-through; }
+        .done-card .responsible-badge { background: #334155; opacity: 0.6; }
+
         .responsible-badge { background: #003057; color: white; padding: 3px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; }
+        .xp-bar-fill { transition: width 1s ease; background: linear-gradient(90deg, #003057, #3b82f6); }
+        
+        /* Zaman Uyarıları */
         .time-urgent { color: #ef4444; font-weight: 800; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-        select[multiple] { height: 160px; scrollbar-width: thin; }
-        .xp-bar-fill { transition: width 1s ease; background: linear-gradient(90deg, #003057, #3b82f6); }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="flex items-center justify-center h-screen px-4 bg-slate-50">
-        <div class="glass p-10 rounded-[2.5rem] shadow-2xl w-full max-w-md">
-            <div class="text-center mb-8">
+    <div id="login-screen" class="flex items-center justify-center h-screen px-4 bg-slate-100">
+        <div class="bg-white p-10 rounded-[3rem] shadow-2xl w-full max-w-md border border-slate-200">
+            <div class="text-center mb-10">
                 <div class="w-16 h-16 bg-[#003057] rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg"><span class="text-white font-bold text-2xl italic">U</span></div>
-                <h2 class="text-2xl font-black text-[#003057]">UTAT YK PANEL</h2>
-                <p class="text-slate-400 text-[10px] mt-1 uppercase tracking-[0.3em] font-bold italic">Smart Deadline Engine</p>
+                <h2 class="text-2xl font-black text-[#003057]">UTAT DASHBOARD</h2>
+                <p class="text-slate-400 text-[10px] mt-1 uppercase tracking-[0.3em] font-bold italic">Drag & Connect System</p>
             </div>
             <div class="space-y-4">
-                <input type="email" id="email" placeholder="E-posta" class="w-full p-4 rounded-2xl border border-slate-200 outline-none focus:ring-2 focus:ring-[#003057]">
-                <input type="password" id="password" placeholder="Şifre" class="w-full p-4 rounded-2xl border border-slate-200 outline-none focus:ring-2 focus:ring-[#003057]">
-                <button id="loginBtn" class="w-full bg-[#003057] text-white py-4 rounded-2xl font-bold shadow-lg uppercase text-xs tracking-widest">Giriş</button>
+                <input type="email" id="email" placeholder="YK E-posta" class="w-full p-4 rounded-2xl border border-slate-200 outline-none focus:ring-2 focus:ring-[#003057] transition">
+                <input type="password" id="password" placeholder="Şifre" class="w-full p-4 rounded-2xl border border-slate-200 outline-none focus:ring-2 focus:ring-[#003057] transition">
+                <button id="loginBtn" class="w-full bg-[#003057] text-white py-4 rounded-2xl font-bold shadow-xl active:scale-95 transition uppercase text-xs tracking-widest">Sisteme Giriş</button>
             </div>
         </div>
     </div>
 
     <div id="admin-panel" class="hidden">
-        <header class="glass sticky top-0 z-50 p-4 border-b border-slate-200 flex justify-between items-center px-6 lg:px-12">
+        <header class="glass sticky top-0 z-50 p-4 flex justify-between items-center px-6 lg:px-12">
             <div class="flex items-center gap-6">
                 <div>
-                    <h1 class="text-lg font-black text-[#003057]">BTÜ UTAT <span class="text-slate-400 font-medium tracking-tighter">| Smart Board</span></h1>
+                    <h1 class="text-lg font-black text-[#003057]">BTÜ UTAT <span class="text-slate-400 font-medium">| Smart Flow</span></h1>
                     <div class="w-48 h-1.5 bg-slate-200 rounded-full mt-1 overflow-hidden"><div id="xp-bar" class="xp-bar-fill h-full" style="width: 0%"></div></div>
                 </div>
-                <button onclick="toggleGuide()" class="bg-blue-50 text-blue-600 text-[10px] font-black px-4 py-2 rounded-xl hover:bg-blue-100 transition border border-blue-200">NASIL KULLANILIR? 📖</button>
             </div>
-            <button id="logoutBtn" class="text-[10px] font-bold text-red-500 bg-red-50 px-5 py-2.5 rounded-2xl hover:bg-red-100 transition uppercase tracking-widest">Çıkış</button>
+            <button id="logoutBtn" class="text-[10px] font-bold text-red-500 bg-red-50 px-5 py-2.5 rounded-2xl hover:bg-red-100 transition">Çıkış</button>
         </header>
 
-        <div id="guide-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-            <div class="bg-white rounded-[2.5rem] p-10 max-w-2xl shadow-2xl animate-in zoom-in duration-300">
-                <h2 class="text-2xl font-black text-[#003057] mb-6">📖 Kullanım Kılavuzu</h2>
-                <div class="space-y-4 text-sm text-slate-600 font-medium">
-                    <p>🚀 <strong class="text-slate-900">Görev Atama:</strong> Formu doldurun. Birden fazla kişi seçmek için <kbd class="bg-slate-100 px-1 rounded">Ctrl</kbd> tuşuna basılı tutun.</p>
-                    <p>🖱️ <strong class="text-slate-900">Sürükle-Bırak:</strong> Kartları tutup istediğiniz sütuna sürükleyin. Durum anında güncellenir.</p>
-                    <p>⏳ <strong class="text-slate-900">Zaman Takibi:</strong> Kartların altında kalan gün sayısı yazar. <span class="text-red-500 font-bold">3 günden az</span> kalınca yazı kırmızıya döner.</p>
-                    <p>🗑️ <strong class="text-slate-900">Silme:</strong> Kartın sağ üstündeki çöp kutusu ikonuna tıklayarak görevi silebilirsiniz.</p>
-                </div>
-                <button onclick="toggleGuide()" class="mt-8 w-full bg-[#003057] text-white py-4 rounded-2xl font-bold shadow-lg">ANLADIM, BAŞLAYALIM!</button>
-            </div>
-        </div>
-
         <main class="p-6 lg:p-12 max-w-[1600px] mx-auto">
-            <div class="bg-white p-8 rounded-[2.5rem] mb-12 shadow-sm border border-slate-100">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
-                    <div class="space-y-3">
-                        <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Operasyon Adı</label>
-                        <input type="text" id="taskName" placeholder="Neler Yapılacak?" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 outline-none focus:bg-white shadow-inner">
+            <div class="bg-white p-8 rounded-[2.5rem] mb-12 shadow-sm border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase ml-2 italic">Görev Tanımı</label>
+                        <input type="text" id="taskName" placeholder="Neler yapılacak?" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 outline-none focus:bg-white transition">
                     </div>
-                    <div class="space-y-3">
-                        <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Sorumlu YK Üyeleri</label>
-                        <select id="responsibleMembers" multiple class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 outline-none font-bold text-slate-700 shadow-inner">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase ml-2 italic">Sorumlu Atama</label>
+                        <select id="responsibleMembers" multiple class="w-full bg-slate-50 p-3 rounded-2xl border border-slate-100 outline-none font-bold text-slate-700 text-xs">
                             <optgroup label="Başkanlık"><option value="Melih AYDOĞAN">Melih AYDOĞAN</option></optgroup>
                             <optgroup label="Organizasyon"><option>Yunus Emre KATAR</option><option>Betül AKTEPE</option><option>Mehmet AKDOĞAN</option><option>Sude GENÇ</option><option>Sinem AKYILDIZ</option></optgroup>
                             <optgroup label="Dış İlişkiler"><option>Ferhat ÖMEROĞLU</option><option>Diana SECHERLI</option><option>Eymen KURT</option></optgroup>
@@ -80,28 +88,28 @@
                             <optgroup label="Sponsorluk"><option>Yaren TUNCER</option><option>Rümeysa TEMÜR</option></optgroup>
                         </select>
                     </div>
-                    <div class="space-y-3">
-                        <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Deadline</label>
-                        <input type="date" id="deadline" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 outline-none focus:bg-white shadow-inner">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase ml-2 italic">Son Tarih</label>
+                        <input type="date" id="deadline" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 outline-none focus:bg-white transition">
                     </div>
-                    <div class="flex items-end pb-4">
-                        <button id="addTaskBtn" class="w-full bg-[#003057] text-white p-5 rounded-2xl font-black shadow-xl hover:shadow-blue-900/30 transition transform active:scale-95 uppercase text-xs tracking-widest">Görevi Yayına Al</button>
+                    <div class="flex items-end pb-3">
+                        <button id="addTaskBtn" class="w-full bg-[#003057] text-white p-4 rounded-2xl font-black shadow-lg active:scale-95 transition uppercase text-xs tracking-widest">Görevi Başlat 🚀</button>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <div class="kanban-column p-8" id="todo-col">
-                    <h4 class="font-black text-slate-400 text-[11px] uppercase mb-10 tracking-[0.3em] flex justify-between items-center px-2">BEKLEYEN <span id="todo-count" class="bg-white px-2.5 py-1 rounded-xl shadow-sm">0</span></h4>
-                    <div id="todo" class="space-y-6 min-h-[600px]"></div>
+                <div class="kanban-column p-8">
+                    <h4 class="font-black text-slate-400 text-[11px] uppercase mb-8 tracking-[0.3em] px-2">BEKLEYENLER</h4>
+                    <div id="todo" class="space-y-6 min-h-[500px]"></div>
                 </div>
-                <div class="kanban-column p-8" id="doing-col">
-                    <h4 class="font-black text-blue-600 text-[11px] uppercase mb-10 tracking-[0.3em] flex justify-between items-center px-2">İŞLEMDE <span id="doing-count" class="bg-blue-600 text-white px-2.5 py-1 rounded-xl shadow-sm">0</span></h4>
-                    <div id="doing" class="space-y-6 min-h-[600px]"></div>
+                <div class="kanban-column p-8">
+                    <h4 class="font-black text-blue-500 text-[11px] uppercase mb-8 tracking-[0.3em] px-2">İŞLEMDE</h4>
+                    <div id="doing" class="space-y-6 min-h-[500px]"></div>
                 </div>
-                <div class="kanban-column p-8" id="done-col">
-                    <h4 class="font-black text-emerald-600 text-[11px] uppercase mb-10 tracking-[0.3em] flex justify-between items-center px-2">TAMAMLANDI <span id="done-count" class="bg-emerald-600 text-white px-2.5 py-1 rounded-xl shadow-sm">0</span></h4>
-                    <div id="done" class="space-y-6 min-h-[600px]"></div>
+                <div class="kanban-column p-8">
+                    <h4 class="font-black text-emerald-500 text-[11px] uppercase mb-8 tracking-[0.3em] px-2">TAMAMLANDI</h4>
+                    <div id="done" class="space-y-6 min-h-[500px]"></div>
                 </div>
             </div>
         </main>
@@ -125,10 +133,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // REHBER KONTROLÜ
-        window.toggleGuide = () => document.getElementById('guide-modal').classList.toggle('hidden');
-
-        // AUTH & DASHBOARD
+        // AUTH
         document.getElementById('loginBtn').onclick = () => {
             signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value).catch(() => alert("Erişim Reddedildi!"));
         };
@@ -145,7 +150,7 @@
             }
         });
 
-        // GÖREV EKLEME
+        // GÖREV EKLE
         document.getElementById('addTaskBtn').onclick = async () => {
             const title = document.getElementById('taskName').value;
             const deadline = document.getElementById('deadline').value;
@@ -154,7 +159,7 @@
 
             if(title && selectedMembers.length > 0) {
                 await addDoc(collection(db, "tasks"), {
-                    title, members: selectedMembers, deadline: deadline || "Tarih Yok", status: "todo", createdAt: new Date()
+                    title, members: selectedMembers, deadline: deadline || "Belirsiz", status: "todo", createdAt: new Date()
                 });
                 document.getElementById('taskName').value = "";
                 memberSelect.selectedIndex = -1;
@@ -162,28 +167,27 @@
         };
 
         window.deleteTask = async (id) => {
-            if(confirm("Görev sistemden silinsin mi?")) await deleteDoc(doc(db, "tasks", id));
+            if(confirm("Görev silinsin mi?")) await deleteDoc(doc(db, "tasks", id));
         };
 
-        // ZAMAN HESAPLAYICI (Kalan Gün)
+        // ZAMAN HESAPLA
         function calculateRemaining(deadlineStr) {
-            if(!deadlineStr || deadlineStr === "Tarih Yok") return "Süre Belirsiz";
-            const diffTime = new Date(deadlineStr) - new Date();
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays < 0) return `<span class="text-red-600 font-bold">Gecikmiş (${Math.abs(diffDays)} gün)</span>`;
-            if (diffDays === 0) return `<span class="time-urgent">BUGÜN TESLİM!</span>`;
-            
-            const colorClass = diffDays <= 3 ? "time-urgent" : "text-slate-400";
-            return `<span class="${colorClass}">Son ${diffDays} gün kaldı</span>`;
+            if(!deadlineStr || deadlineStr === "Belirsiz") return "";
+            const diffDays = Math.ceil((new Date(deadlineStr) - new Date()) / (1000 * 60 * 60 * 24));
+            if (diffDays < 0) return `<span class="text-red-600 font-bold text-[9px]">Gecikti (${Math.abs(diffDays)} G)</span>`;
+            if (diffDays <= 2) return `<span class="time-urgent text-[9px]">Son ${diffDays} G!</span>`;
+            return `<span class="text-slate-400 text-[9px]">Son ${diffDays} G</span>`;
         }
 
+        // KANBAN SÜRÜKLE BIRAK
         function initKanban() {
             const columns = ['todo', 'doing', 'done'];
             columns.forEach(colId => {
                 new Sortable(document.getElementById(colId), {
                     group: 'tasks',
-                    animation: 250,
+                    animation: 300,
+                    ghostClass: 'sortable-ghost',
+                    dragClass: 'sortable-drag',
                     onEnd: async (evt) => {
                         const taskId = evt.item.getAttribute('data-id');
                         const newStatus = evt.to.id;
@@ -199,30 +203,28 @@
                 snapshot.forEach(d => {
                     const data = d.data();
                     const id = d.id;
+                    const isDone = data.status === 'done';
                     counts[data.status]++;
+                    
                     const badges = data.members.map(m => `<span class="responsible-badge">${m}</span>`).join("");
-                    const timeInfo = calculateRemaining(data.deadline);
+                    const timeInfo = isDone ? "" : calculateRemaining(data.deadline);
 
                     sections[data.status] += `
-                        <div class="task-card p-6 border-l-[10px] ${data.status === 'done' ? 'border-l-emerald-500' : (data.status === 'doing' ? 'border-l-blue-600' : 'border-l-slate-200')} animate-in fade-in duration-300" data-id="${id}">
+                        <div class="task-card p-6 border-l-[12px] ${isDone ? 'done-card border-l-slate-700' : (data.status === 'doing' ? 'border-l-blue-600 shadow-blue-100' : 'border-l-slate-300')} animate-in zoom-in duration-300" data-id="${id}">
                             <div class="flex justify-between items-start mb-4">
-                                <p class="font-extrabold text-[14px] text-slate-800 leading-tight">${data.title}</p>
-                                <button onclick="deleteTask('${id}')" class="text-slate-200 hover:text-red-500 transition"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                                <p class="font-black text-[14px] text-slate-800 leading-tight">${data.title}</p>
+                                <button onclick="deleteTask('${id}')" class="text-slate-300 hover:text-red-500 transition"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                             </div>
                             <div class="flex flex-wrap gap-1.5 mb-5">${badges}</div>
-                            <div class="pt-3 border-t border-slate-50 flex items-center justify-between">
-                                <span class="text-[10px] font-black uppercase tracking-tighter">${timeInfo}</span>
-                                <span class="text-[9px] font-bold text-slate-300 bg-slate-100 px-2 py-0.5 rounded italic">TUT & TAŞI</span>
+                            <div class="pt-3 border-t ${isDone ? 'border-slate-700' : 'border-slate-50'} flex items-center justify-between">
+                                <span class="uppercase tracking-widest font-black">${isDone ? '<span class="text-emerald-500 text-[9px]">GÖREV TAMAM</span>' : timeInfo}</span>
+                                <span class="text-[8px] font-black text-slate-300 tracking-tighter uppercase italic">Move</span>
                             </div>
                         </div>
                     `;
                 });
 
-                columns.forEach(colId => {
-                    document.getElementById(colId).innerHTML = sections[colId];
-                    document.getElementById(colId + '-count').innerText = counts[colId];
-                });
-
+                columns.forEach(id => document.getElementById(id).innerHTML = sections[id]);
                 const xp = snapshot.size > 0 ? (counts.done / snapshot.size) * 100 : 0;
                 document.getElementById('xp-bar').style.width = xp + "%";
             });
