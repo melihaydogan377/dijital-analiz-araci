@@ -3,73 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UTAT Admin | S-Rank Panel</title>
+    <title>BTÜ UTAT | Yönetim Paneli</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
         .hidden { display: none; }
-        body { background-color: #0b0f1a; color: white; }
-        .kanban-column { background: rgba(30, 41, 59, 0.5); min-height: 500px; border-radius: 12px; border: 1px solid #1e293b; }
-        .xp-bar { transition: width 0.5s ease-in-out; }
+        .kurumsal-mavi { background-color: #003057; } /* BTÜ Laciverti */
+        .kanban-column { background-color: #f1f5f9; min-height: 600px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .task-card { background: white; transition: all 0.3s ease; border: 1px solid #e2e8f0; }
+        .task-card:hover { transform: translateY(-3px); shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .xp-bar-bg { background-color: #e2e8f0; border-radius: 999px; }
+        .xp-bar-fill { transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); background: linear-gradient(90deg, #003057, #00569d); }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="flex items-center justify-center h-screen px-4">
-        <div class="bg-slate-900 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-indigo-500/30">
-            <h2 class="text-3xl font-black mb-2 text-center text-indigo-400 italic">SYSTEM LOGIN</h2>
-            <p class="text-gray-500 text-center text-xs mb-8 uppercase tracking-widest">UTAT Executive Access</p>
-            <input type="email" id="email" placeholder="Admin E-posta" class="w-full p-3 mb-4 bg-slate-800 rounded-lg border border-slate-700 outline-none focus:border-indigo-500 transition text-white">
-            <input type="password" id="password" placeholder="Şifre" class="w-full p-3 mb-6 bg-slate-800 rounded-lg border border-slate-700 outline-none focus:border-indigo-500 transition text-white">
-            <button id="loginBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-lg font-black shadow-lg shadow-indigo-500/20 transition">ZİNDANA GİR</button>
+    <div id="login-screen" class="flex items-center justify-center h-screen px-4 bg-slate-100">
+        <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md border border-slate-200">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">BTÜ UTAT</h2>
+                <p class="text-slate-500 text-sm mt-2">Uluslararası Ticaret Araştırmaları Topluluğu</p>
+            </div>
+            <div class="space-y-4">
+                <input type="email" id="email" placeholder="Kurumsal E-posta" class="w-full p-3 bg-slate-50 rounded-lg border border-slate-300 outline-none focus:ring-2 focus:ring-blue-900 transition text-slate-900">
+                <input type="password" id="password" placeholder="Şifre" class="w-full p-3 bg-slate-50 rounded-lg border border-slate-300 outline-none focus:ring-2 focus:ring-blue-900 transition text-slate-900">
+                <button id="loginBtn" class="w-full kurumsal-mavi text-white py-3 rounded-lg font-bold shadow-lg hover:opacity-90 transition uppercase tracking-wider">Sisteme Giriş Yap</button>
+            </div>
         </div>
     </div>
 
     <div id="admin-panel" class="hidden">
-        <header class="bg-slate-900/80 backdrop-blur-md p-4 sticky top-0 z-50 border-b border-indigo-900/50 flex justify-between items-center">
-            <div>
-                <h1 class="text-xl font-black italic text-indigo-400">UTAT RESEARCH</h1>
-                <div class="w-48 h-2 bg-slate-800 rounded-full mt-1 overflow-hidden">
-                    <div id="xp-bar" class="xp-bar h-full bg-indigo-500" style="width: 0%"></div>
+        <header class="bg-white border-b border-slate-200 p-4 sticky top-0 z-50 flex justify-between items-center shadow-sm">
+            <div class="flex items-center gap-6">
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 tracking-tight">UTAT <span class="text-blue-800 italic">PANEL</span></h1>
+                    <div class="xp-bar-bg w-48 h-1.5 mt-1">
+                        <div id="xp-bar" class="xp-bar-fill h-full rounded-full" style="width: 0%"></div>
+                    </div>
                 </div>
             </div>
-            <button id="logoutBtn" class="text-[10px] border border-red-500 text-red-500 px-3 py-1 rounded-md hover:bg-red-500 hover:text-white transition">OTURUMU KAPAT</button>
+            <div class="flex items-center gap-4">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest hidden md:block">Yönetici Oturumu</span>
+                <button id="logoutBtn" class="text-xs border border-slate-300 text-slate-600 px-4 py-2 rounded-lg hover:bg-slate-50 transition font-bold">ÇIKIŞ YAP</button>
+            </div>
         </header>
 
-        <main class="p-4 max-w-7xl mx-auto">
-            <div class="bg-slate-900 p-5 rounded-xl mb-8 border border-slate-800">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <input type="text" id="taskName" placeholder="Görev adı..." class="bg-slate-800 p-2 rounded-lg border border-slate-700 outline-none focus:border-indigo-500">
-                    <select id="deptHead" class="bg-slate-800 p-2 rounded-lg border border-slate-700 outline-none">
-                        <option>Dış İlişkiler</option>
-                        <option>Medya & Tanıtım</option>
-                        <option>Organizasyon</option>
-                        <option>Ar-Ge</option>
+        <main class="p-6 max-w-7xl mx-auto">
+            <div class="bg-white p-6 rounded-xl mb-10 shadow-sm border border-slate-200">
+                <h3 class="text-slate-900 font-bold mb-4 flex items-center gap-2">
+                    <span class="w-2 h-6 kurumsal-mavi rounded-full"></span>
+                    Yeni Operasyonel Görev Atama
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <input type="text" id="taskName" placeholder="Görev başlığı..." class="bg-slate-50 p-3 rounded-lg border border-slate-200 outline-none focus:border-blue-800 transition">
+                    <select id="deptHead" class="bg-slate-50 p-3 rounded-lg border border-slate-200 outline-none">
+                        <option>Dış İlişkiler Birimi</option>
+                        <option>Medya & Tanıtım Birimi</option>
+                        <option>Organizasyon Birimi</option>
+                        <option>Ar-Ge & Proje Birimi</option>
                     </select>
-                    <input type="date" id="deadline" class="bg-slate-800 p-2 rounded-lg border border-slate-700 outline-none">
-                    <button id="addTaskBtn" class="bg-indigo-600 hover:bg-indigo-500 font-bold rounded-lg transition">GÖREVİ BAŞLAT ⚔️</button>
+                    <input type="date" id="deadline" class="bg-slate-50 p-3 rounded-lg border border-slate-200 outline-none">
+                    <button id="addTaskBtn" class="kurumsal-mavi text-white font-bold rounded-lg hover:bg-blue-900 transition shadow-md">GÖREVİ YAYINLA</button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="kanban-column p-4">
-                    <h3 class="text-gray-400 font-black text-xs uppercase mb-4 tracking-widest flex justify-between">
-                        Bekleyenler <span id="todo-count" class="text-indigo-400">0</span>
-                    </h3>
-                    <div id="todo-container" class="space-y-3"></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="kanban-column p-5">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-slate-500 font-bold text-xs uppercase tracking-widest">Açık Görevler</h3>
+                        <span id="todo-count" class="bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-1 rounded-full">0</span>
+                    </div>
+                    <div id="todo-container" class="space-y-4"></div>
                 </div>
 
-                <div class="kanban-column p-4 border-indigo-900/20">
-                    <h3 class="text-indigo-400 font-black text-xs uppercase mb-4 tracking-widest flex justify-between">
-                        Yürütülenler <span id="doing-count" class="text-indigo-400">0</span>
-                    </h3>
-                    <div id="doing-container" class="space-y-3"></div>
+                <div class="kanban-column p-5 border-blue-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-blue-800 font-bold text-xs uppercase tracking-widest">İşlemdekiler</h3>
+                        <span id="doing-count" class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-1 rounded-full">0</span>
+                    </div>
+                    <div id="doing-container" class="space-y-4"></div>
                 </div>
 
-                <div class="kanban-column p-4 border-green-900/20">
-                    <h3 class="text-green-400 font-black text-xs uppercase mb-4 tracking-widest flex justify-between">
-                        Tamamlanan <span id="done-count" class="text-green-400">0</span>
-                    </h3>
-                    <div id="done-container" class="space-y-3"></div>
+                <div class="kanban-column p-5 border-emerald-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-emerald-700 font-bold text-xs uppercase tracking-widest">Tamamlananlar</h3>
+                        <span id="done-count" class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded-full">0</span>
+                    </div>
+                    <div id="done-container" class="space-y-4"></div>
                 </div>
             </div>
         </main>
@@ -94,11 +115,10 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- AUTH ---
         document.getElementById('loginBtn').onclick = () => {
             const e = document.getElementById('email').value;
             const p = document.getElementById('password').value;
-            signInWithEmailAndPassword(auth, e, p).catch(err => alert("Giriş başarısız!"));
+            signInWithEmailAndPassword(auth, e, p).catch(err => alert("Giriş bilgileri hatalı!"));
         };
         document.getElementById('logoutBtn').onclick = () => signOut(auth);
 
@@ -113,34 +133,29 @@
             }
         });
 
-        // --- GÖREV EKLE ---
         document.getElementById('addTaskBtn').onclick = async () => {
             const title = document.getElementById('taskName').value;
             const assignedTo = document.getElementById('deptHead').value;
             const deadline = document.getElementById('deadline').value;
-
             if(title) {
                 await addDoc(collection(db, "tasks"), {
-                    title, assignedTo, deadline: deadline || "Süre yok",
+                    title, assignedTo, deadline: deadline || "Süresiz",
                     status: "todo", createdAt: new Date()
                 });
                 document.getElementById('taskName').value = "";
             }
         };
 
-        // --- DURUM GÜNCELLE ---
         window.updateStatus = async (id, newStatus) => {
             await updateDoc(doc(db, "tasks", id), { status: newStatus });
         };
 
-        // --- GÖREV SİL ---
         window.deleteTask = async (id) => {
-            if(confirm("Bu görevi sistemden silmek istiyor musun?")) {
+            if(confirm("Bu görevi arşive taşımak istediğinize emin misiniz?")) {
                 await deleteDoc(doc(db, "tasks", id));
             }
         };
 
-        // --- VERİ SENKRONİZASYONU ---
         function syncData() {
             onSnapshot(query(collection(db, "tasks"), orderBy("createdAt", "desc")), (snapshot) => {
                 const sections = { todo: "", doing: "", done: "" };
@@ -151,18 +166,21 @@
                     const id = d.id;
                     counts[data.status]++;
 
-                    let buttons = "";
-                    if(data.status === "todo") buttons = `<button onclick="updateStatus('${id}', 'doing')" class="text-[10px] bg-indigo-600 px-2 py-1 rounded">BAŞLAT</button>`;
-                    else if(data.status === "doing") buttons = `<button onclick="updateStatus('${id}', 'done')" class="text-[10px] bg-green-600 px-2 py-1 rounded">TAMAMLA</button>`;
-                    else buttons = `<button onclick="deleteTask('${id}')" class="text-[10px] bg-slate-700 px-2 py-1 rounded text-red-400">ARŞİVLE</button>`;
+                    let actionBtn = "";
+                    if(data.status === "todo") actionBtn = `<button onclick="updateStatus('${id}', 'doing')" class="bg-blue-50 text-blue-800 text-[10px] px-3 py-1.5 rounded-lg font-bold border border-blue-100 hover:bg-blue-800 hover:text-white transition">BAŞLAT</button>`;
+                    else if(data.status === "doing") actionBtn = `<button onclick="updateStatus('${id}', 'done')" class="bg-emerald-50 text-emerald-700 text-[10px] px-3 py-1.5 rounded-lg font-bold border border-emerald-100 hover:bg-emerald-700 hover:text-white transition">TAMAMLA</button>`;
+                    else actionBtn = `<button onclick="deleteTask('${id}')" class="bg-slate-50 text-slate-400 text-[10px] px-3 py-1.5 rounded-lg font-bold hover:bg-red-50 hover:text-red-500 transition">ARŞİVLE</button>`;
 
                     sections[data.status] += `
-                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-xl border-l-4 ${data.status === 'done' ? 'border-l-green-500' : 'border-l-indigo-500'}">
-                            <div class="flex justify-between items-start">
-                                <p class="font-bold text-sm text-indigo-100">${data.title}</p>
-                                ${buttons}
+                        <div class="task-card p-5 rounded-xl shadow-sm border-l-4 ${data.status === 'done' ? 'border-l-emerald-500' : (data.status === 'doing' ? 'border-l-blue-800' : 'border-l-slate-300')}">
+                            <div class="flex justify-between items-start gap-2">
+                                <p class="font-bold text-sm text-slate-800 leading-tight">${data.title}</p>
+                                ${actionBtn}
                             </div>
-                            <p class="text-[10px] text-gray-500 mt-2 italic">${data.assignedTo} | ⏳ ${data.deadline}</p>
+                            <div class="flex items-center justify-between mt-4">
+                                <span class="text-[10px] font-medium text-slate-500 uppercase tracking-wide">${data.assignedTo}</span>
+                                <span class="text-[10px] font-bold text-slate-400 italic">${data.deadline}</span>
+                            </div>
                         </div>
                     `;
                 });
@@ -175,7 +193,6 @@
                 document.getElementById('doing-count').innerText = counts.doing;
                 document.getElementById('done-count').innerText = counts.done;
 
-                // XP Bar Güncelleme
                 const total = counts.todo + counts.doing + counts.done;
                 const xp = total > 0 ? (counts.done / total) * 100 : 0;
                 document.getElementById('xp-bar').style.width = xp + "%";
